@@ -27,7 +27,6 @@ class File(Base):
 
     device_id = Column(String, ForeignKey('devices.uuid', ondelete='CASCADE'), nullable=False)
     device = relationship("Device", back_populates="files")
-    hash = Column(String, nullable=False)
     size = Column(BigInteger, nullable=False)
     outdated = Column(Boolean, nullable=False, default=False)
 

@@ -23,17 +23,14 @@ def init_metadata(loc: str):
 
 
 @contextmanager
-def session_scope():
+def transaction_scope(session: Session) -> Session:
     """Provide a transactional scope around a series of operations."""
-    session = Session()
     try:
         yield session
         session.commit()
     except:
         session.rollback()
         raise
-    finally:
-        session.close()
 
 
 def add_file(session: Session, newfile: File):
@@ -68,13 +65,13 @@ def add_device(session: Session, newdev: Device):
     session.commit()
 
 
-def outdated_files(session: Session, dev: Device):
+def outdated_files(session: Session, dev_uuid):
     return session.query(File) \
         .filter(File.outdated == True) \
-        .filter(File.device == dev)
+        .filter(File.device_id == dev_uuid)
 
 
-def file_vers(session: Session, path: str):
+def file_latest(session: Session, path: str):
     return session.query(File) \
         .filter(File.outdated == False) \
         .filter(File.path == path) \
